@@ -1,7 +1,8 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, SafeAreaView, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 
 import Appbar, { DEFAULT_APPBAR_HEIGHT } from './Appbar';
 import shadow from '../../styles/shadow';
@@ -98,11 +99,13 @@ class AppbarHeader extends React.Component<Props> {
     } = StyleSheet.flatten(style) || {};
 
     // Let the user override the behaviour
-    const Wrapper =
-      typeof this.props.statusBarHeight === 'number' ? View : SafeAreaView;
+    const useView = typeof this.props.statusBarHeight === 'number';
+    const Wrapper = useView ? View : SafeAreaView;
+    const wrapperProps = useView ? {} : { forceInset: { top: 'always', bottom: 'never' } };
 
     return (
       <Wrapper
+        {...wrapperProps}
         style={[{ backgroundColor, zIndex }, elevation && shadow(elevation)]}
       >
         {/* $FlowFixMe: There seems to be conflict between Appbar's props and Header's props */}
